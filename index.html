@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Astbury's own ........ Spot the intro - Quiz Night</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --card: #111827;
+      --card-border: #1f2937;
+      --surface: #0b1220;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --btn-bg: #1f2937;
+      --btn-hover: #334155;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 16px 64px;
+      background: radial-gradient(circle at top, #0f172a 0%, var(--bg) 65%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 4vw, 2.3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.94);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
+    }
+
+    .card h2 {
+      margin: 0 0 18px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .folder-dropzone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 22px 16px;
+      border: 1.5px dashed #334155;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.55);
+      color: #e2e8f0;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      text-align: center;
+    }
+
+    .folder-dropzone:hover {
+      border-color: var(--accent);
+      background: rgba(30, 41, 59, 0.75);
+    }
+
+    #folderInput {
+      display: none;
+    }
+
+    .track-status {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 14px 0 10px;
+      min-height: 1.3em;
+    }
+
+    .track-status strong {
+      color: var(--text);
+    }
+
+    .timer-display {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin: 6px 0 12px;
+    }
+
+    .progress-track {
+      width: 68%;
+      margin: 0 auto 20px;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #818cf8);
+      border-radius: 999px;
+      transition: width 0.08s linear;
+    }
+
+    .intro-config {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .intro-config input {
+      width: 82px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--btn-bg);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.08s, opacity 0.15s;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--btn-hover);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.16);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.28);
+    }
+
+    .playlist-panel {
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid #263349;
+    }
+
+    .playlist-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .playlist-header h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .playlist-list {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.7;
+      color: #e2e8f0;
+    }
+
+    .playlist-list li.current-track {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .scoreboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .scoreboard-header h2 {
+      margin: 0;
+      text-align: left;
+    }
+
+    .scoreboard-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .scoreboard-form input {
+      flex: 1;
+      padding: 11px 14px;
+      border-radius: 8px;
+      border: 1px solid #2c3a52;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .scoreboard-form input::placeholder {
+      color: #64748b;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 8px 0 0;
+    }
+
+    .team-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .team-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid #1e293b;
+    }
+
+    .team-name {
+      font-weight: 600;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .team-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .team-score {
+      min-width: 34px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .btn-sm {
+      padding: 6px 11px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎵 What's this Intro ????? - Astbury Quiz Night</h1>
+      <p>Interactive Quiz Night Soundboard &amp; Scorekeeper</p>
+    </header>
+
+    <!-- Music Player Card -->
+    <section class="card" aria-label="Astbury's own Music Player">
+      <h2>Astbury's own Music Player</h2>
+
+      <label class="folder-dropzone" for="folderInput">
+        <span>📁 Click here to select local MP3s from playlist folder</span>
+      </label>
+      <input id="folderInput" type="file" webkitdirectory directory multiple accept="audio/*,.mp3" />
+
+      <div id="trackStatus" class="track-status">No tracks loaded yet.</div>
+
+      <div id="timerDisplay" class="timer-display">10.0s</div>
+
+      <div class="progress-track" aria-hidden="true">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <div class="intro-config">
+        <label for="introDurationInput">Intro duration (seconds):</label>
+        <input id="introDurationInput" type="number" min="1" max="120" step="0.5" value="30.0" />
+      </div>
+
+      <div class="controls-row">
+        <button id="playIntroBtn" type="button" disabled>▶ Play Intro</button>
+        <button id="pauseBtn" type="button" disabled>⏸ Pause</button>
+        <button id="continueBtn" type="button" disabled>▶ Continue</button>
+        <button id="stopBtn" type="button" disabled>⏹ Stop</button>
+        <button id="revealSongBtn" type="button" disabled>👁 Reveal Song</button>
+        <button id="nextTrackBtn" type="button" disabled>⏭ Next Track</button>
+        <button id="showPlaylistBtn" type="button">📋 Show Playlist</button>
+      </div>
+
+      <div id="playlistPanel" class="playlist-panel" hidden>
+        <div class="playlist-header">
+          <h3>Quiz Playlist (<span id="playlistCount">0</span> tracks)</h3>
+          <button id="closePlaylistBtn" class="btn-sm" type="button">Close</button>
+        </div>
+        <ol id="playlistList" class="playlist-list"></ol>
+      </div>
+    </section>
+
+    <!-- Team Scoreboard Card -->
+    <section class="card" aria-label="Team Scoreboard">
+      <div class="scoreboard-header">
+        <h2>Team Scoreboard</h2>
+        <button id="resetScoresBtn" class="btn-sm btn-danger" type="button" disabled>↺ Reset Scores</button>
+      </div>
+
+      <form id="addTeamForm" class="scoreboard-form">
+        <input id="teamNameInput" type="text" placeholder="Enter team name..." maxlength="40" />
+        <button id="addTeamBtn" class="btn-primary" type="submit">Add Team</button>
+      </form>
+
+      <p id="emptyTeamsMsg" class="empty-state">No teams added yet. Add a team above to begin!</p>
+      <div id="teamList" class="team-list"></div>
+    </section>
+  </div>
+
+  <audio id="audioPlayer" preload="metadata"></audio>
+
+  <script>
+    const folderInput = document.getElementById("folderInput");
+    const trackStatus = document.getElementById("trackStatus");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const progressFill = document.getElementById("progressFill");
+    const introDurationInput = document.getElementById("introDurationInput");
+
+    const playIntroBtn = document.getElementById("playIntroBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const continueBtn = document.getElementById("continueBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const revealSongBtn = document.getElementById("revealSongBtn");
+    const nextTrackBtn = document.getElementById("nextTrackBtn");
+    const showPlaylistBtn = document.getElementById("showPlaylistBtn");
+    const closePlaylistBtn = document.getElementById("closePlaylistBtn");
+
+    const playlistPanel = document.getElementById("playlistPanel");
+    const playlistCount = document.getElementById("playlistCount");
+    const playlistList = document.getElementById("playlistList");
+
+    const audioPlayer = document.getElementById("audioPlayer");
+
+    const addTeamForm = document.getElementById("addTeamForm");
+    const teamNameInput = document.getElementById("teamNameInput");
+    const emptyTeamsMsg = document.getElementById("emptyTeamsMsg");
+    const teamList = document.getElementById("teamList");
+    const resetScoresBtn = document.getElementById("resetScoresBtn");
+
+    const STORAGE_KEY = "astbury_quiz_teams_v1";
+
+    let tracks = [];
+    let currentIndex = -1;
+    let isRevealed = false;
+    let isPlayingIntro = false;
+    let isPausedIntro = false;
+    let segmentStartTime = 0;
+    let accumulatedElapsed = 0;
+    let activeIntroDuration = 30;
+    let rafId = null;
+    let teams = loadTeams();
+
+    function loadTeams() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed
+          .filter((item) => item && typeof item.name === "string" && item.name.trim().length > 0)
+          .map((item) => ({
+            name: item.name.trim(),
+            score: Number.isFinite(Number(item.score)) ? Number(item.score) : 0
+          }));
+      } catch (err) {
+        console.warn("Could not load saved teams from localStorage:", err);
+        return [];
+      }
+    }
+
+    function saveTeams() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(teams));
+      } catch (err) {
+        console.warn("Could not save teams to localStorage:", err);
+      }
+    }
+
+    function shuffleArray(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function cleanTitle(filename) {
+      return filename
+        .replace(/\.[^/.]+$/, "")
+        .replace(/[_-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function getIntroSeconds() {
+      const parsed = parseFloat(introDurationInput.value);
+      if (!Number.isFinite(parsed) || parsed <= 0) {
+        return 30;
+      }
+      return Math.min(120, Math.max(0.5, parsed));
+    }
+
+    function cancelAnimationLoop() {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }
+
+    function stopPlayback(resetCountdown = true) {
+      isPlayingIntro = false;
+      isPausedIntro = false;
+      accumulatedElapsed = 0;
+      segmentStartTime = 0;
+      cancelAnimationLoop();
+      audioPlayer.pause();
+
+      if (resetCountdown) {
+        const introSec = getIntroSeconds();
+        timerDisplay.textContent = `${introSec.toFixed(1)}s`;
+        progressFill.style.width = "0%";
+      }
+      updateButtonStates();
+    }
+
+    function pauseIntro() {
+      if (!isPlayingIntro || isPausedIntro) return;
+
+      const nowElapsed = (performance.now() - segmentStartTime) / 1000;
+      accumulatedElapsed = Math.min(activeIntroDuration, accumulatedElapsed + nowElapsed);
+      isPlayingIntro = false;
+      isPausedIntro = true;
+      cancelAnimationLoop();
+      audioPlayer.pause();
+
+      const remaining = Math.max(0, activeIntroDuration - accumulatedElapsed);
+      const pct = Math.min(100, (accumulatedElapsed / activeIntroDuration) * 100);
+      timerDisplay.textContent = `${remaining.toFixed(1)}s`;
+      progressFill.style.width = `${pct}%`;
+
+      updateButtonStates();
+    }
+
+    async function continueIntro() {
+      if (tracks.length === 0 || currentIndex < 0 || !isPausedIntro) return;
+
+      const remaining = Math.max(0, activeIntroDuration - accumulatedElapsed);
+      if (remaining <= 0) {
+        stopPlayback(false);
+        return;
+      }
+
+      isPausedIntro = false;
+      isPlayingIntro = true;
+      segmentStartTime = performance.now();
+
+      try {
+        await audioPlayer.play();
+      } catch (err) {
+        console.error("Audio playback error:", err);
+      }
+
+      updateButtonStates();
+      rafId = requestAnimationFrame(tickIntro);
+    }
+
+    function updateButtonStates() {
+      const hasTracks = tracks.length > 0 && currentIndex >= 0;
+      playIntroBtn.disabled = !hasTracks;
+      pauseBtn.disabled = !hasTracks || !isPlayingIntro;
+      continueBtn.disabled = !hasTracks || !isPausedIntro;
+      stopBtn.disabled = !hasTracks;
+      revealSongBtn.disabled = !hasTracks;
+      nextTrackBtn.disabled = !hasTracks;
+    }
+
+    function renderTrackStatus() {
+      if (tracks.length === 0 || currentIndex < 0) {
+        trackStatus.textContent = "No tracks loaded yet.";
+        return;
+      }
+      const track = tracks[currentIndex];
+      trackStatus.innerHTML = isRevealed
+        ? `Playing / Selected: <strong>${escapeHtml(track.title)}</strong> (${currentIndex + 1} of ${tracks.length})`
+        : `Track <strong>${currentIndex + 1}</strong> of <strong>${tracks.length}</strong> — <em>Hidden until revealed</em>`;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function selectTrack(index, autoPlayIntro = false) {
+      if (tracks.length === 0) return;
+      stopPlayback(true);
+      currentIndex = ((index % tracks.length) + tracks.length) % tracks.length;
+      isRevealed = false;
+      audioPlayer.src = tracks[currentIndex].url;
+      audioPlayer.currentTime = 0;
+      renderTrackStatus();
+      updateButtonStates();
+      if (!playlistPanel.hidden) {
+        renderPlaylist();
+      }
+      if (autoPlayIntro) {
+        startIntro();
+      }
+    }
+
+    function tickIntro() {
+      if (!isPlayingIntro) return;
+
+      const currentSegmentElapsed = (performance.now() - segmentStartTime) / 1000;
+      const totalElapsed = accumulatedElapsed + currentSegmentElapsed;
+      const remaining = Math.max(0, activeIntroDuration - totalElapsed);
+      const pct = Math.min(100, (totalElapsed / activeIntroDuration) * 100);
+
+      timerDisplay.textContent = `${remaining.toFixed(1)}s`;
+      progressFill.style.width = `${pct}%`;
+
+      if (remaining <= 0) {
+        stopPlayback(false);
+        timerDisplay.textContent = "0.0s";
+        progressFill.style.width = "100%";
+        return;
+      }
+
+      rafId = requestAnimationFrame(tickIntro);
+    }
+
+    async function startIntro() {
+      if (tracks.length === 0 || currentIndex < 0) return;
+
+      stopPlayback(false);
+      activeIntroDuration = getIntroSeconds();
+      accumulatedElapsed = 0;
+      isPausedIntro = false;
+      isPlayingIntro = true;
+      segmentStartTime = performance.now();
+
+      audioPlayer.currentTime = 0;
+      try {
+        await audioPlayer.play();
+      } catch (err) {
+        console.error("Audio playback error:", err);
+      }
+
+      updateButtonStates();
+      rafId = requestAnimationFrame(tickIntro);
+    }
+
+    function revealSong() {
+      if (tracks.length === 0 || currentIndex < 0) return;
+      isRevealed = true;
+      renderTrackStatus();
+    }
+
+    function renderPlaylist() {
+      playlistCount.textContent = String(tracks.length);
+      playlistList.innerHTML = "";
+
+      if (tracks.length === 0) {
+        const li = document.createElement("li");
+        li.textContent = "No MP3 tracks loaded from folder yet.";
+        playlistList.appendChild(li);
+        return;
+      }
+
+      tracks.forEach((track, idx) => {
+        const li = document.createElement("li");
+        li.textContent = track.title;
+        if (idx === currentIndex) {
+          li.classList.add("current-track");
+        }
+        playlistList.appendChild(li);
+      });
+    }
+
+    function togglePlaylist(force No newline at end of file
